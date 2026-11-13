@@ -16,7 +16,7 @@ from config import ANIO_FIN, ANIO_INICIO, DEPARTAMENTOS, RUTA_PROCESADOS
 
 st.set_page_config(page_title="Dengue en Colombia 2020-2025", page_icon="🦟", layout="wide")
 
-COLUMNA_TIPO = {"Todos": "casos_total", "Dengue": "casos_dengue", "Dengue grave": "casos_grave"}
+COLUMNA_TIPO = {"Todos": "casos_total", "Dengue": "casos_dengue"}
 AMBIENTALES = {"Temperatura media (°C)": "temp_media",
                "Lluvia acumulada (mm/mes)": "lluvia_mm",
                "Humedad relativa (%)": "humedad"}
@@ -27,9 +27,7 @@ ARCHIVOS = {"mensual": "dengue_mensual.csv", "semanal": "dengue_semanal.csv",
 NOMBRES_DPTO = {codigo: datos[0] for codigo, datos in DEPARTAMENTOS.items()}
 
 
-# ---------------------------------------------------------------------------
-# Datos (con caché)
-# ---------------------------------------------------------------------------
+
 @st.cache_data(show_spinner="Cargando datos…")
 def cargar_datos():
     """Lee los CSV procesados y agrega el nombre del departamento. None si faltan archivos."""
@@ -68,10 +66,7 @@ def filtrar(df, deptos, anios):
     """Filtra una tabla por departamentos seleccionados y rango de años."""
     return df[df["departamento"].isin(deptos) & df["anio"].between(*anios)]
 
-
-# ---------------------------------------------------------------------------
-# Gráficos
-# ---------------------------------------------------------------------------
+#mapas
 def figura_mapa(agg, etiqueta):
     """Mapa de burbujas por departamento (tamaño y color según la métrica elegida)."""
     agg = agg.assign(tam=agg["valor"].clip(lower=0).fillna(0) + 1)
@@ -81,7 +76,7 @@ def figura_mapa(agg, etiqueta):
                     center={"lat": 4.5, "lon": -73.5}, height=520, labels={"valor": etiqueta})
     if hasattr(px, "scatter_map"):
         return px.scatter_map(agg, map_style="open-street-map", **opciones)
-    return px.scatter_mapbox(agg, mapbox_style="open-street-map", **opciones)  # plotly < 5.24
+    return px.scatter_mapbox(agg, mapbox_style="open-street-map", **opciones)  
 
 
 def figura_dispersion(datos, x, y, etiquetas, log_y=False, color=None, texto=None):
@@ -127,7 +122,7 @@ def pestana_intro(m, col):
     c3.metric("% dengue grave", f"{pct_graves:.1f} %")
     c4.metric("Muertes notificadas", f"{m['muertes'].sum():,.0f}")
     st.caption("Fuentes: SIVIGILA (INS) 2020-2025 · clima: NASA POWER (capital de cada "
-               "departamento) · población: DANE (si se cargó). Use los filtros de la barra lateral.")
+               "departamento), Use los filtros de la barra lateral.")
 
 
 def pestana_espaciotemporal(m, datos, deptos, anios, col, usar_incidencia):
@@ -264,13 +259,12 @@ def pestana_conclusiones(m, col):
         "- Correlación no implica causalidad: la altitud, la urbanización, el acceso a agua y la "
         "notificación también influyen.\n"
         "- El clima corresponde a la **capital** del departamento, que no representa todo su territorio.\n"
-        "- SIVIGILA mide casos **notificados**; hay subregistro y cambios en la vigilancia entre años.\n"
-        "- Sin población (DANE) se comparan casos absolutos, que favorecen a los departamentos más poblados.")
+        "- SIVIGILA mide casos **notificados**; hay subregistro y cambios en la vigilancia entre años.\n")
 
 
-# ---------------------------------------------------------------------------
-# Aplicación
-# ---------------------------------------------------------------------------
+#---
+#Pagina principal
+#---
 def main():
     """Construye la barra lateral de filtros y las cuatro pestañas."""
     st.title("🦟 De los datos a la historia: dengue en Colombia, 2020-2025")
@@ -291,8 +285,6 @@ def main():
     t_min, t_max = math.floor(mensual["temp_media"].min()), math.ceil(mensual["temp_media"].max())
     rango_temp = st.sidebar.slider("Temperatura media mensual (°C)", t_min, t_max, (t_min, t_max),
                                    help="Aplica a la pestaña de correlación ambiental.")
-    if not tiene_poblacion:
-        st.sidebar.info("Sin población DANE: la incidencia no está disponible.")
 
     col = COLUMNA_TIPO[tipo]
     m = filtrar(mensual, deptos, anios)
