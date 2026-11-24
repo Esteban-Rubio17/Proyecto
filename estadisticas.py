@@ -10,7 +10,6 @@ VARIABLES_AMBIENTALES = ["temp_media", "lluvia_mm", "humedad"]
 
 
 def pearson(x, y):
-    """Correlación de Pearson ignorando NaN. Devuelve NaN si no es calculable."""
     x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
     valido = np.isfinite(x) & np.isfinite(y)
     if valido.sum() < 3 or np.std(x[valido]) == 0 or np.std(y[valido]) == 0:
@@ -99,12 +98,6 @@ def _z_por_departamento(df, columna):
 
 def correlacion_con_rezagos(mensual, variables=VARIABLES_AMBIENTALES,
                             col="casos_total", max_rezago=3):
-    """Correlación entre el clima de hace `r` meses y los casos del mes actual.
-
-    Se estandariza dentro de cada departamento para medir cómo se mueven juntos en el
-    tiempo, sin que las diferencias estructurales entre departamentos (p. ej. uno
-    caliente y poblado vs. uno frío) inflen la correlación.
-    """
     df = mensual.sort_values(["cod_dpto", "fecha"]).copy()
     df["_casos"] = np.log1p(df[col])
     df["_casos_z"] = _z_por_departamento(df, "_casos")
@@ -133,7 +126,6 @@ def relacion_geografica(mensual, col="casos_total"):
 
 
 def describir_correlacion(r):
-    """Traduce un coeficiente de correlación a texto (fuerza y dirección)."""
     if r is None or np.isnan(r):
         return "no calculable"
     fuerza = ("prácticamente nula" if abs(r) < 0.1 else "débil" if abs(r) < 0.3
