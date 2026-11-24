@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 log = logging.getLogger(__name__)
 
 LLAVE_MES = ["cod_dpto", "anio", "mes"]
-CONTEOS = ["casos_dengue", "casos_grave", "casos_total", "muertes"]
+CONTEOS = ["casos_dengue", "muertes"]
 
 
 # ----------------------------------------------------------------------------
