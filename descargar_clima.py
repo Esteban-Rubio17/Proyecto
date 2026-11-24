@@ -1,6 +1,6 @@
 """Descarga clima diario 2020-2025 de NASA POWER para la capital de cada departamento.
 
-Uso:  python descargar_clima.py      (tarda unos minutos; requiere internet)
+Uso:  python descargar_clima.py    
 Salida: data/raw/clima_diario_2020_2025.csv
 """
 import time
