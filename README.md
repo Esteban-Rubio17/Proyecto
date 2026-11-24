@@ -12,18 +12,16 @@ ambientales están relacionados con la incidencia del dengue en Colombia?**
 ├── estadisticas.py        # Métricas y correlaciones (NumPy/Pandas)
 ├── requirements.txt
 └── data/
-    ├── raw/               # SIVIGILA 2020-2025 + clima + población
+    ├── raw/               # SIVIGILA 2020-2025 + clima
     └── processed/         # CSV listos para el dashboard 
 ```
 
 ## Cómo reproducirlo
 1. `pip install -r requirements.txt`
-2. Copia los archivos anuales de SIVIGILA (dengue 210 y dengue grave 220, 2020-2025) en `data/raw/`.
+2. Copia los archivos anuales de SIVIGILA (dengue 210 del 2020-2025) en `data/raw/`.
 3. `python descargar_clima.py` → crea `data/raw/clima_diario_2020_2025.csv`.
-4. *(Opcional, recomendado)* crea `data/raw/poblacion_dane.csv` con columnas
-   `cod_dpto,anio,poblacion` (proyecciones departamentales del DANE) para calcular incidencia.
-5. `python limpieza.py` → genera `data/processed/*.csv` y `auditoria_limpieza.csv`.
-6. `streamlit run app.py`
+4. `python limpieza.py` → genera `data/processed/*.csv` y `auditoria_limpieza.csv`.
+5. `streamlit run app.py`
 
 Si `limpieza.py` dice que faltan columnas, revisa los nombres reales de tus archivos y agrega
 el alias en `ALIAS_COLUMNAS` de `config.py`. Verifica también en `config.py` los códigos de
