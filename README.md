@@ -23,15 +23,6 @@ ambientales están relacionados con la incidencia del dengue en Colombia?**
 4. `python limpieza.py` → genera `data/processed/*.csv` y `auditoria_limpieza.csv`.
 5. `streamlit run app.py`
 
-Si `limpieza.py` dice que faltan columnas, revisa los nombres reales de tus archivos y agrega
-el alias en `ALIAS_COLUMNAS` de `config.py`. Verifica también en `config.py` los códigos de
-`AJUSTES_DESCARTADOS` y `CONDICION_MUERTO` contra el diccionario de datos del INS.
-
-## Despliegue en Streamlit Cloud
-1. Sube el repositorio a GitHub **incluyendo `data/processed/`** (pesa pocos MB).
-2. Entra a https://share.streamlit.io → *New app* → elige el repo, rama `main` y archivo `app.py`.
-3. *Deploy*. Streamlit instala `requirements.txt` automáticamente.
-
 ## Decisiones metodológicas
 - Duplicados exactos eliminados sobre las columnas completas del archivo original.
 - Se excluyen casos descartados (campo AJUSTE) y el evento de mortalidad (para no duplicar).
