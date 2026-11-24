@@ -263,7 +263,7 @@ def pestana_conclusiones(m, col):
 #---
 def main():
     """Construye la barra lateral de filtros y las cuatro pestañas."""
-    st.title("🦟 De los datos a la historia: dengue en Colombia, 2020-2025")
+    st.title("🦟 De los datos a la historia: dengue en Colombia, 2020-2025🦟")
     datos = cargar_datos()
     if datos is None:
         st.error("Faltan archivos en data/processed. Ejecuta primero `python limpieza.py`.")
