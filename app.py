@@ -1,8 +1,4 @@
-"""Dashboard: factores geográficos, temporales y ambientales del dengue en Colombia (2020-2025).
 
-Ejecutar:  streamlit run app.py
-Requiere los CSV de data/processed (se generan con `python limpieza.py`).
-"""
 import math
 
 import numpy as np
