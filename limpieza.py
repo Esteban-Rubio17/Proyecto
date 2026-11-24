@@ -63,7 +63,6 @@ def leer_archivo(ruta):
 
 
 def estandarizar_columnas(df):
-    """Normaliza los nombres de columnas y los renombra a los nombres canónicos."""
     df = df.copy()
     df.columns = [normalizar_nombre_columna(c) for c in df.columns]
     renombrar = {}
@@ -79,12 +78,6 @@ def estandarizar_columnas(df):
 # 2. Carga
 # ----------------------------------------------------------------------------
 def cargar_sivigila(carpeta=RUTA_RAW):
-    """Carga y une todos los archivos anuales de SIVIGILA de la carpeta.
-
-    Importante: los duplicados exactos se eliminan sobre TODAS las columnas del archivo
-    original. Si se deduplicara después de quedarnos con pocas columnas, se borrarían
-    casos reales distintos que casualmente comparten semana, municipio, edad y sexo.
-    """
     excluir = ("clima", "poblacion")
     archivos = sorted(p for p in Path(carpeta).glob("*")
                       if p.suffix.lower() in {".csv", ".xlsx", ".xls"}
@@ -117,7 +110,7 @@ def cargar_sivigila(carpeta=RUTA_RAW):
 # 3. Limpieza por pasos
 # ----------------------------------------------------------------------------
 def asignar_tipo_evento(df):
-    """Crea 'tipo_evento' (Dengue / Dengue grave) y descarta otros eventos (p. ej. mortalidad)."""
+    """Crea 'tipo_evento' (Dengue) y descarta otros eventos (p. ej. mortalidad)."""
     df = df.copy()
     if df["cod_evento"].notna().any():
         df["tipo_evento"] = pd.to_numeric(df["cod_evento"], errors="coerce").map(EVENTOS)
@@ -164,7 +157,6 @@ def normalizar_codigos(df):
     df["cod_dpto"] = dpto.astype(str).str.zfill(2)
 
     mun = pd.to_numeric(df["cod_mun"], errors="coerce")
-    # Si viene el código corto (1-3 dígitos) se completa con el departamento.
     mun = mun.where(mun >= 1000, dpto * 1000 + mun)
     df["cod_mun"] = mun.round().astype("Int64").astype(str).str.zfill(5)
     df.loc[mun.isna(), "cod_mun"] = np.nan
@@ -180,13 +172,12 @@ def unificar_nombres(df):
             .groupby("cod_mun")["m"].agg(lambda s: s.mode().iat[0]))
     nombre_final = df["cod_mun"].map(moda).fillna(nombres)
     titulo = nombre_final.map(lambda s: s.title() if isinstance(s, str) else np.nan)
-    # Si el archivo solo trae códigos (sin nombres), se etiqueta con el código.
     df["municipio"] = titulo.where(titulo.notna(), "Municipio " + df["cod_mun"].astype(str))
     return df
 
 
 def estandarizar_demografia(df):
-    """Crea edad en años, grupo etario, sexo legible, área legible y bandera de fallecido."""
+    """Crea edad en años, grupo etario, sexo legible, área legible."""
     df = df.copy()
     edad = pd.to_numeric(df["edad"], errors="coerce")
     unidad = pd.to_numeric(df["unidad_edad"], errors="coerce").map(FACTOR_EDAD_A_ANIOS)
@@ -210,10 +201,7 @@ def estandarizar_demografia(df):
 
 
 def limpiar_sivigila(df):
-    """Aplica todos los pasos de limpieza. Devuelve (DataFrame limpio, auditoría).
-
-    La auditoría es una tabla paso -> filas restantes, útil como evidencia en el informe.
-    """
+    """Aplica todos los pasos de limpieza. Devuelve (DataFrame limpio, auditoría)."""
     auditoria = [{"paso": "Filas cargadas (sin duplicados exactos)", "filas": len(df)}]
 
     def registrar(paso, datos):
