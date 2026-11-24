@@ -4,7 +4,6 @@ from pathlib import Path
 RUTA_RAW = Path("data/raw")
 RUTA_PROCESADOS = Path("data/processed")
 ARCHIVO_CLIMA = RUTA_RAW / "clima_diario_2020_2025.csv"
-ARCHIVO_POBLACION = RUTA_RAW / "poblacion_dane.csv"  # opcional: cod_dpto, anio, poblacion
 
 ANIO_INICIO = 2020
 ANIO_FIN = 2025
@@ -47,15 +46,13 @@ DEPARTAMENTOS = {
     "99": ("Vichada", 6.1890, -67.4859),
 }
 
-# Códigos de evento SIVIGILA que se conservan (580 = mortalidad por dengue se excluye
-# para no duplicar casos).
+
 EVENTOS = {210: "Dengue", 220: "Dengue grave"}
 
-# Valores del campo AJUSTE que significan "descartar el caso" (6 = descartado,
-# D = error de digitación). VERIFICAR en el diccionario de datos del INS.
+
 AJUSTES_DESCARTADOS = {"6", "D"}
 
-# Valor de CON_FIN (condición final) que significa fallecido. Verificar en el diccionario.
+
 CONDICION_MUERTO = 2
 
 # Unidad de medida de la edad (UNI_MED) -> factor para convertir a años.
