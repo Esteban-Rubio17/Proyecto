@@ -12,8 +12,8 @@ ambientales están relacionados con la incidencia del dengue en Colombia?**
 ├── estadisticas.py        # Métricas y correlaciones (NumPy/Pandas)
 ├── requirements.txt
 └── data/
-    ├── raw/               # SIVIGILA 2020-2025 + clima + población (no se sube a GitHub)
-    └── processed/         # CSV listos para el dashboard (SÍ se suben)
+    ├── raw/               # SIVIGILA 2020-2025 + clima + población
+    └── processed/         # CSV listos para el dashboard 
 ```
 
 ## Cómo reproducirlo
